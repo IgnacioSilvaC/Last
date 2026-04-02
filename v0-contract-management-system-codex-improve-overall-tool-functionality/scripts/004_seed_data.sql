@@ -1,0 +1,3 @@
+-- This script will be used to add initial test data after authentication is set up
+-- For now, it's a placeholder for future seeding
+-- Users should first sign up through the application, then we can add properties/contracts
