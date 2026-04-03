@@ -5,16 +5,6 @@ import { Settings } from "lucide-react"
 import { ConfigForm } from "@/components/config-form"
 
 const configDescriptions: Record<string, { label: string; description: string; suffix: string }> = {
-  interest_rate_daily: {
-    label: "Tasa de interés diaria por mora",
-    description: "Se aplica al saldo pendiente por cada día de atraso (ej: 0.001 = 0.1% diario)",
-    suffix: "por día",
-  },
-  grace_days: {
-    label: "Días de gracia",
-    description: "Días adicionales después del vencimiento antes de aplicar mora",
-    suffix: "días",
-  },
   alert_days_before_due: {
     label: "Días previos para alerta de vencimiento",
     description: "Cuántos días antes del vencimiento de una cuota se genera la alerta",
@@ -35,12 +25,10 @@ const configDescriptions: Record<string, { label: string; description: string; s
     description: "Tras cuántos días sin pagos se marca al cliente como inactivo",
     suffix: "días",
   },
-  mora_grave_days: {
-    label: "Días para mora grave",
-    description: "A partir de cuántos días de atraso se considera mora grave",
-    suffix: "días",
-  },
 }
+
+// Keys de mora que ya no aplican (la mora es por contrato)
+const hiddenKeys = new Set(["interest_rate_daily", "grace_days", "mora_grave_days"])
 
 export default async function ConfigPage() {
   const supabase = await createClient()
@@ -79,16 +67,18 @@ export default async function ConfigPage() {
             Parámetros de Negocio
           </CardTitle>
           <CardDescription>
-            Estos valores controlan el cálculo de mora, intereses y generación de alertas.
+            Configuración de alertas automáticas del sistema. La mora se configura en cada contrato individualmente.
           </CardDescription>
         </CardHeader>
         <CardContent>
           {configs && configs.length > 0 ? (
             <ConfigForm
-              configs={configs.map((c: any) => ({
-                ...c,
-                ...(configDescriptions[c.config_key] || { label: c.config_key, description: c.description || "", suffix: "" }),
-              }))}
+              configs={configs
+                .filter((c: any) => !hiddenKeys.has(c.config_key))
+                .map((c: any) => ({
+                  ...c,
+                  ...(configDescriptions[c.config_key] || { label: c.config_key, description: c.description || "", suffix: "" }),
+                }))}
             />
           ) : (
             <div className="text-center py-8">

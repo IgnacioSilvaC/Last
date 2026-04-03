@@ -15,7 +15,6 @@ import {
   UserPlus,
   CalendarClock,
   Bell,
-  ClipboardList,
 } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
@@ -121,12 +120,6 @@ const adminMenuItems = [
     title: "Agentes",
     url: "/agentes",
     icon: UserPlus,
-    roles: ["admin"],
-  },
-  {
-    title: "Auditoría",
-    url: "/auditoria",
-    icon: ClipboardList,
     roles: ["admin"],
   },
   {

@@ -258,7 +258,7 @@ export function ContractForm({
       tenant_id: selectedTenantId || null,
       landlord_id: selectedLandlordId || null,
       guarantor_id: selectedGuarantorId || null,
-      guarantor2_id: showSecondGuarantor && selectedGuarantor2Id ? selectedGuarantor2Id : null,
+      guarantor_2_id: showSecondGuarantor && selectedGuarantor2Id ? selectedGuarantor2Id : null,
       contract_number: contractNumber,
       start_date: startDate,
       end_date: endDate,
