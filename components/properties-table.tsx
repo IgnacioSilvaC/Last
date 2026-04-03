@@ -40,13 +40,13 @@ interface Property {
   id: string
   code: string | null
   address: string
-  city: string | null
-  state: string | null
+  city?: string | null
+  neighborhood?: string | null
   property_type: string
   status: string
-  bedrooms: number
-  bathrooms: number
-  area_m2: number | null
+  bedrooms?: number | null
+  bathrooms?: number | null
+  square_meters?: number | null
 }
 
 export function PropertiesTable({ properties }: { properties: Property[] }) {
@@ -163,13 +163,13 @@ export function PropertiesTable({ properties }: { properties: Property[] }) {
                   <div className="max-w-xs">
                     <p className="truncate font-medium">{property.address}</p>
                     <p className="text-sm text-muted-foreground">
-                      {[property.city, property.state].filter(Boolean).join(", ") || "-"}
+                      {[property.city, property.neighborhood].filter(Boolean).join(", ") || "-"}
                     </p>
                   </div>
                 </TableCell>
                 <TableCell>{propertyTypeLabels[property.property_type] || property.property_type}</TableCell>
                 <TableCell>
-                  {property.bedrooms} amb. / {property.bathrooms} baños
+                  {property.bedrooms ?? 0} amb. / {property.bathrooms ?? 0} baños
                 </TableCell>
                 <TableCell>
                   <Badge variant="secondary" className={statusColors[property.status] || ""}>

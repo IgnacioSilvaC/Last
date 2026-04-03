@@ -29,25 +29,27 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  // Protect dashboard and admin routes
-  if (
-    !user &&
-    (request.nextUrl.pathname.startsWith("/dashboard") ||
-      request.nextUrl.pathname.startsWith("/propiedades") ||
-      request.nextUrl.pathname.startsWith("/contratos") ||
-      request.nextUrl.pathname.startsWith("/arrendatarios") ||
-      request.nextUrl.pathname.startsWith("/arrendadores") ||
-      request.nextUrl.pathname.startsWith("/pagos"))
-  ) {
+  // Protect all app routes — only /login is public
+  const publicPaths = ["/login", "/"]
+  const isPublic = publicPaths.includes(request.nextUrl.pathname)
+
+  if (!user && !isPublic) {
     const url = request.nextUrl.clone()
     url.pathname = "/login"
     return NextResponse.redirect(url)
   }
 
-  // Redirect authenticated users away from auth pages
-  if (user && (request.nextUrl.pathname === "/login" || request.nextUrl.pathname === "/registro")) {
+  // Redirect authenticated users away from login
+  if (user && request.nextUrl.pathname === "/login") {
     const url = request.nextUrl.clone()
     url.pathname = "/dashboard"
+    return NextResponse.redirect(url)
+  }
+
+  // Block any unauthenticated access to registration (removed)
+  if (request.nextUrl.pathname.startsWith("/registro")) {
+    const url = request.nextUrl.clone()
+    url.pathname = "/login"
     return NextResponse.redirect(url)
   }
 

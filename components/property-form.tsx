@@ -37,12 +37,12 @@ export function PropertyForm({ property, mode = "create" }: PropertyFormProps) {
       code: formData.get("code") as string,
       address: formData.get("address") as string,
       city: formData.get("city") as string,
-      state: formData.get("state") as string,
-      zip_code: formData.get("zip_code") as string,
+      neighborhood: formData.get("neighborhood") as string,
+      postal_code: formData.get("postal_code") as string,
       property_type: formData.get("property_type") as string,
       bedrooms: formData.get("bedrooms") ? Number.parseInt(formData.get("bedrooms") as string) : 0,
       bathrooms: formData.get("bathrooms") ? Number.parseInt(formData.get("bathrooms") as string) : 0,
-      area_m2: formData.get("area_m2") ? Number.parseFloat(formData.get("area_m2") as string) : null,
+      square_meters: formData.get("square_meters") ? Number.parseFloat(formData.get("square_meters") as string) : null,
       description: formData.get("description") as string,
       status: formData.get("status") as string,
       // Números de suministros
@@ -94,7 +94,7 @@ export function PropertyForm({ property, mode = "create" }: PropertyFormProps) {
                   <SelectItem value="oficina">Oficina</SelectItem>
                   <SelectItem value="cochera">Cochera</SelectItem>
                   <SelectItem value="terreno">Terreno</SelectItem>
-                  <SelectItem value="galpon">Galpón</SelectItem>
+                  <SelectItem value="bodega">Bodega / Galpón</SelectItem>
                   <SelectItem value="otro">Otro</SelectItem>
                 </SelectContent>
               </Select>
@@ -119,13 +119,13 @@ export function PropertyForm({ property, mode = "create" }: PropertyFormProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="state">Provincia</Label>
-              <Input id="state" name="state" defaultValue={property?.state} placeholder="CABA" />
+              <Label htmlFor="neighborhood">Barrio / Zona</Label>
+              <Input id="neighborhood" name="neighborhood" defaultValue={property?.neighborhood} placeholder="Palermo" />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="zip_code">Código Postal</Label>
-              <Input id="zip_code" name="zip_code" defaultValue={property?.zip_code} placeholder="C1043" />
+              <Label htmlFor="postal_code">Código Postal</Label>
+              <Input id="postal_code" name="postal_code" defaultValue={property?.postal_code} placeholder="C1043" />
             </div>
           </div>
 
@@ -155,14 +155,14 @@ export function PropertyForm({ property, mode = "create" }: PropertyFormProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="area_m2">Superficie (m²)</Label>
+              <Label htmlFor="square_meters">Superficie (m²)</Label>
               <Input
-                id="area_m2"
-                name="area_m2"
+                id="square_meters"
+                name="square_meters"
                 type="number"
                 step="0.01"
                 min="0"
-                defaultValue={property?.area_m2}
+                defaultValue={property?.square_meters}
                 placeholder="65.00"
               />
             </div>
