@@ -91,7 +91,7 @@ export function ContractForm({
   const [endDate, setEndDate] = useState<string>(contract?.end_date || "")
 
   // Form state - Financial
-  const [currency, setCurrency] = useState(contract?.currency || "ARS")
+  const [currency, setCurrency] = useState<string>(contract?.currency || "ARS")
   const [monthlyRent, setMonthlyRent] = useState<number>(contract?.monthly_rent || 0)
   const [depositMonths, setDepositMonths] = useState<number>(contract?.deposit_months || 1)
   const [adminFeePercentage, setAdminFeePercentage] = useState<number>(contract?.admin_fee_percentage || 0)
