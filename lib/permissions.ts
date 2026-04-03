@@ -51,7 +51,7 @@ export function hasPermission(userRole: UserRole, resource: keyof typeof PERMISS
   const allowedRoles = permissions[action as keyof typeof permissions]
   if (!allowedRoles) return false
 
-  return allowedRoles.includes(userRole)
+  return (allowedRoles as readonly string[]).includes(userRole)
 }
 
 export function canDelete(userRole: UserRole): boolean {
