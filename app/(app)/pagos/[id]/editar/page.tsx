@@ -10,15 +10,7 @@ export default async function EditPaymentPage({ params }: { params: Promise<{ id
     supabase.from("payments").select("*").eq("id", id).single(),
     supabase
       .from("contracts")
-      .select(
-        `
-        id,
-        contract_number,
-        monthly_rent,
-        tenants (full_name),
-        properties (code, address)
-      `,
-      )
+      .select("*, tenants (full_name), properties (code, address)")
       .eq("status", "activo"),
   ])
 
