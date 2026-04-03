@@ -81,12 +81,12 @@ export function ContractForm({
   const [selectedTenantId, setSelectedTenantId] = useState<string>(contract?.tenant_id || "")
   const [selectedLandlordId, setSelectedLandlordId] = useState<string>(contract?.landlord_id || "")
   const [selectedGuarantorId, setSelectedGuarantorId] = useState<string>(contract?.guarantor_id || "")
-  const [selectedGuarantor2Id, setSelectedGuarantor2Id] = useState<string>(contract?.guarantor2_id || "")
-  const [showSecondGuarantor, setShowSecondGuarantor] = useState(!!contract?.guarantor2_id)
+  const [selectedGuarantor2Id, setSelectedGuarantor2Id] = useState<string>(contract?.guarantor_2_id || "")
+  const [showSecondGuarantor, setShowSecondGuarantor] = useState(!!contract?.guarantor_2_id)
 
   // Form state - Contract details
   const [contractNumber, setContractNumber] = useState(contract?.contract_number || "")
-  const [contractType, setContractType] = useState(contract?.contract_type || "vivienda")
+  const [contractType, setContractType] = useState("vivienda")
   const [startDate, setStartDate] = useState<string>(contract?.start_date || "")
   const [endDate, setEndDate] = useState<string>(contract?.end_date || "")
 
@@ -111,9 +111,9 @@ export function ContractForm({
   const [fireInsurancePolicy, setFireInsurancePolicy] = useState(contract?.fire_insurance_policy || "")
   const [fireInsuranceCompany, setFireInsuranceCompany] = useState(contract?.fire_insurance_company || "")
   const [latePaymentFeePercentage, setLatePaymentFeePercentage] = useState<number>(
-    contract?.late_payment_fee_percentage || 0,
+    contract?.late_payment_penalty_percentage || 0,
   )
-  const [graceDays, setGraceDays] = useState<number>(contract?.grace_days || 0)
+  const [graceDays, setGraceDays] = useState<number>(contract?.late_payment_grace_days || 0)
 
   // Form state - Notes
   const [specialClauses, setSpecialClauses] = useState(contract?.special_clauses || "")
