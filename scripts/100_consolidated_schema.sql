@@ -323,9 +323,10 @@ CREATE TABLE IF NOT EXISTS public.price_indices (
   notes TEXT,
   created_by UUID REFERENCES auth.users(id),
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  UNIQUE(COALESCE(agency_id, '00000000-0000-0000-0000-000000000000'::UUID), index_type, year, month)
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  -- UNIQUE constraint handled via idx_price_indices_type_date (agency_id, index_type, year, month)
 );
+
 
 -- =====================================================
 -- 5. ALERTAS Y NOTIFICACIONES
@@ -496,7 +497,7 @@ CREATE INDEX IF NOT EXISTS idx_partial_payments_agency ON public.partial_payment
 CREATE INDEX IF NOT EXISTS idx_interest_calc_payment ON public.interest_calculations(payment_id);
 
 -- Price indices
-CREATE INDEX IF NOT EXISTS idx_price_indices_type_date ON public.price_indices(index_type, year, month);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_price_indices_type_date ON public.price_indices(agency_id, index_type, year, month);
 CREATE INDEX IF NOT EXISTS idx_price_indices_agency ON public.price_indices(agency_id);
 
 -- Alerts

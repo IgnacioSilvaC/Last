@@ -202,7 +202,7 @@ export default async function DashboardPage() {
     <div className="space-y-6 max-w-[1400px] mx-auto">
       <div>
         <h1 className="text-3xl font-bold tracking-tight text-primary">Dashboard</h1>
-        <p className="text-muted-foreground">Resumen de gestión — {currentMonthName} {currentYear}</p>
+        <p className="text-muted-foreground">Panel de gestión — {currentMonthName} {currentYear}</p>
       </div>
 
       {isFirstDaysOfMonth && (
@@ -222,7 +222,7 @@ export default async function DashboardPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card className="border-l-4 border-l-green-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Ingresos del Mes</CardTitle>
+            <CardTitle className="text-sm font-medium">Cobros del mes</CardTitle>
             <DollarSign className="h-4 w-4 text-green-500" />
           </CardHeader>
           <CardContent>
@@ -266,14 +266,14 @@ export default async function DashboardPage() {
               {formatCurrency(totalOutstandingDebt, "ARS")}
             </div>
             <p className="text-xs text-muted-foreground">
-              Saldo insoluto acumulado en cartera
+              Saldo pendiente acumulado en cartera
             </p>
           </CardContent>
         </Card>
 
         <Card className="border-l-4 border-l-red-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pagos en Mora</CardTitle>
+            <CardTitle className="text-sm font-medium">Cuotas en mora</CardTitle>
             <AlertCircle className="h-4 w-4 text-red-500" />
           </CardHeader>
           <CardContent>
@@ -305,7 +305,7 @@ export default async function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-emerald-600">{propertiesCount || 0}</div>
-            <p className="text-xs text-muted-foreground">{occupancyRate}% de ocupación ({rentedPropertiesCount || 0} arrendadas)</p>
+            <p className="text-xs text-muted-foreground">{occupancyRate}% de ocupación ({rentedPropertiesCount || 0} alquiladas)</p>
           </CardContent>
         </Card>
 
@@ -343,7 +343,7 @@ export default async function DashboardPage() {
               <div>
                 <CardTitle className="flex items-center gap-2 text-red-600">
                   <AlertCircle className="h-5 w-5" />
-                  Pagos en Mora
+                  Cuotas en mora
                 </CardTitle>
                 <CardDescription>Cuotas vencidas con saldo pendiente</CardDescription>
               </div>
@@ -511,7 +511,7 @@ export default async function DashboardPage() {
         <Card className="border-t-4 border-t-green-500">
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle className="text-green-600">Contratos Recientes</CardTitle>
+              <CardTitle className="text-green-600">Últimos contratos</CardTitle>
               <Button variant="ghost" size="sm" asChild>
                 <Link href="/contratos/nuevo">+ Nuevo</Link>
               </Button>

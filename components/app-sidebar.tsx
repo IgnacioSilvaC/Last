@@ -112,6 +112,12 @@ const financeMenuItems = [
 
 const adminMenuItems = [
   {
+    title: "Usuarios",
+    url: "/usuarios",
+    icon: Users,
+    roles: ["admin"],
+  },
+  {
     title: "Agentes",
     url: "/agentes",
     icon: UserPlus,

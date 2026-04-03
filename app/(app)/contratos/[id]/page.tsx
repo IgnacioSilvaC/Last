@@ -48,7 +48,7 @@ export default async function ContractDetailPage({ params }: { params: Promise<{
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">{contract.contract_number}</h1>
-          <p className="text-muted-foreground">Detalles del contrato de arrendamiento</p>
+          <p className="text-muted-foreground">Detalle del contrato de alquiler</p>
         </div>
         <Button asChild>
           <Link href={`/contratos/${contract.id}/editar`}>
@@ -75,7 +75,7 @@ export default async function ContractDetailPage({ params }: { params: Promise<{
               </Badge>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Renta Mensual</p>
+              <p className="text-sm text-muted-foreground">Alquiler mensual</p>
               <p className="text-2xl font-bold">${Number(contract.monthly_rent).toFixed(2)}</p>
             </div>
             {contract.security_deposit && (
@@ -126,7 +126,7 @@ export default async function ContractDetailPage({ params }: { params: Promise<{
               <p className="font-medium">{new Date(contract.start_date).toLocaleDateString()}</p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Fecha de Término</p>
+              <p className="text-sm text-muted-foreground">Fecha de finalización</p>
               <p className="font-medium">{new Date(contract.end_date).toLocaleDateString()}</p>
             </div>
             <div>
@@ -144,7 +144,7 @@ export default async function ContractDetailPage({ params }: { params: Promise<{
 
         <Card>
           <CardHeader>
-            <CardTitle>Arrendatario</CardTitle>
+            <CardTitle>Inquilino</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
@@ -162,14 +162,14 @@ export default async function ContractDetailPage({ params }: { params: Promise<{
               </div>
             )}
             <Button asChild variant="outline" size="sm" className="w-full bg-transparent">
-              <Link href={`/arrendatarios/${contract.tenants.id}`}>Ver Arrendatario</Link>
+              <Link href={`/arrendatarios/${contract.tenants.id}`}>Ver inquilino</Link>
             </Button>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>Arrendador</CardTitle>
+            <CardTitle>Propietario</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
@@ -187,7 +187,7 @@ export default async function ContractDetailPage({ params }: { params: Promise<{
               </div>
             )}
             <Button asChild variant="outline" size="sm" className="w-full bg-transparent">
-              <Link href={`/arrendadores/${contract.landlords.id}`}>Ver Arrendador</Link>
+              <Link href={`/arrendadores/${contract.landlords.id}`}>Ver propietario</Link>
             </Button>
           </CardContent>
         </Card>

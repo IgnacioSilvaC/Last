@@ -16,9 +16,10 @@ import { Upload } from "lucide-react"
 interface Landlord {
   id: string
   full_name: string
-  document_type?: string
+  identification_type?: string
   identification?: string
   tax_id?: string
+  tax_condition?: string
   email?: string
   phone?: string
   address?: string
@@ -50,9 +51,10 @@ export function LandlordForm({ landlord, mode = "create" }: LandlordFormProps) {
     const landlordData = {
       agency_id: agency?.id,
       full_name: formData.get("full_name") as string,
-      document_type: formData.get("document_type") as string,
+      identification_type: formData.get("identification_type") as string,
       identification: formData.get("identification") as string,
       tax_id: (formData.get("tax_id") as string) || null,
+      tax_condition: (formData.get("tax_condition") as string) || null,
       email: (formData.get("email") as string) || null,
       phone: formData.get("phone") as string,
       address: (formData.get("address") as string) || null,
@@ -98,8 +100,8 @@ export function LandlordForm({ landlord, mode = "create" }: LandlordFormProps) {
 
           <div className="grid gap-4 md:grid-cols-3">
             <div className="space-y-2">
-              <Label htmlFor="document_type">Tipo de Documento</Label>
-              <Select name="document_type" defaultValue={landlord?.document_type || "DNI"}>
+              <Label htmlFor="identification_type">Tipo de Documento</Label>
+              <Select name="identification_type" defaultValue={landlord?.identification_type || "DNI"}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>

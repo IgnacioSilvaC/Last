@@ -16,18 +16,16 @@ import { Upload } from "lucide-react"
 interface Tenant {
   id: string
   full_name: string
-  document_type?: string
+  identification_type?: string
   identification?: string
-  tax_id?: string
   email?: string
   phone?: string
   address?: string
   occupation?: string
   employer?: string
-  employer_phone?: string
   monthly_income?: number
-  document_url?: string
-  salary_receipt_url?: string
+  emergency_contact_name?: string
+  emergency_contact_phone?: string
   notes?: string
 }
 
@@ -61,16 +59,16 @@ export function TenantForm({ tenant, mode = "create" }: TenantFormProps) {
     const tenantData = {
       agency_id: agency?.id,
       full_name: formData.get("full_name") as string,
-      document_type: formData.get("document_type") as string,
+      identification_type: formData.get("identification_type") as string,
       identification: formData.get("identification") as string,
-      tax_id: (formData.get("tax_id") as string) || null,
       email: (formData.get("email") as string) || null,
       phone: formData.get("phone") as string,
       address: (formData.get("address") as string) || null,
       occupation: (formData.get("occupation") as string) || null,
       employer: (formData.get("employer") as string) || null,
-      employer_phone: (formData.get("employer_phone") as string) || null,
       monthly_income: sanitizeNumber(formData.get("monthly_income") as string),
+      emergency_contact_name: (formData.get("emergency_contact_name") as string) || null,
+      emergency_contact_phone: (formData.get("emergency_contact_phone") as string) || null,
       notes: (formData.get("notes") as string) || null,
     }
 
@@ -108,10 +106,10 @@ export function TenantForm({ tenant, mode = "create" }: TenantFormProps) {
             />
           </div>
 
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="document_type">Tipo de Documento</Label>
-              <Select name="document_type" defaultValue={tenant?.document_type || "DNI"}>
+              <Label htmlFor="identification_type">Tipo de Documento</Label>
+              <Select name="identification_type" defaultValue={tenant?.identification_type || "DNI"}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -133,11 +131,6 @@ export function TenantForm({ tenant, mode = "create" }: TenantFormProps) {
                 defaultValue={tenant?.identification}
                 placeholder="12345678"
               />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="tax_id">CUIT/CUIL</Label>
-              <Input id="tax_id" name="tax_id" defaultValue={tenant?.tax_id} placeholder="20-12345678-9" />
             </div>
           </div>
 
@@ -207,13 +200,28 @@ export function TenantForm({ tenant, mode = "create" }: TenantFormProps) {
                   placeholder="Nombre de la empresa"
                 />
               </div>
+            </div>
+          </div>
 
+          <div className="space-y-4 border-t pt-4">
+            <h3 className="text-lg font-semibold">Contacto de Emergencia</h3>
+            <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="employer_phone">Teléfono del Empleador</Label>
+                <Label htmlFor="emergency_contact_name">Nombre</Label>
                 <Input
-                  id="employer_phone"
-                  name="employer_phone"
-                  defaultValue={tenant?.employer_phone}
+                  id="emergency_contact_name"
+                  name="emergency_contact_name"
+                  defaultValue={tenant?.emergency_contact_name}
+                  placeholder="Nombre del contacto"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="emergency_contact_phone">Teléfono</Label>
+                <Input
+                  id="emergency_contact_phone"
+                  name="emergency_contact_phone"
+                  type="tel"
+                  defaultValue={tenant?.emergency_contact_phone}
                   placeholder="11 9876-5432"
                 />
               </div>

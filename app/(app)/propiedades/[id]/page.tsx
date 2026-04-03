@@ -16,7 +16,7 @@ const statusColors: Record<string, string> = {
 
 const statusLabels: Record<string, string> = {
   disponible: "Disponible",
-  arrendado: "Arrendado",
+  arrendado: "Alquilado",
   mantenimiento: "Mantenimiento",
   reservado: "Reservado",
   inactivo: "Inactivo",
@@ -29,7 +29,7 @@ const propertyTypeLabels: Record<string, string> = {
   oficina: "Oficina",
   cochera: "Cochera",
   terreno: "Terreno",
-  bodega: "Bodega",
+  bodega: "Depósito",
   otro: "Otro",
 }
 
@@ -75,7 +75,7 @@ export default async function PropertyDetailPage({ params }: { params: Promise<{
               </Badge>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Renta Mensual</p>
+              <p className="text-sm text-muted-foreground">Alquiler mensual</p>
               <p className="text-2xl font-bold">${Number(property.monthly_rent).toFixed(2)}</p>
             </div>
           </CardContent>
@@ -118,7 +118,7 @@ export default async function PropertyDetailPage({ params }: { params: Promise<{
           <CardContent className="space-y-4">
             {property.bedrooms !== null && (
               <div>
-                <p className="text-sm text-muted-foreground">Recámaras</p>
+                <p className="text-sm text-muted-foreground">Ambientes</p>
                 <p className="font-medium">{property.bedrooms}</p>
               </div>
             )}

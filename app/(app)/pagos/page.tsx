@@ -26,7 +26,7 @@ export default async function PaymentsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-primary">Cuotas y Pagos</h1>
-          <p className="text-muted-foreground">Gestiona cuotas, registra pagos parciales y controla la mora</p>
+          <p className="text-muted-foreground">Administra cuotas, registra cobros y controla la mora</p>
         </div>
         <Button asChild className="bg-primary">
           <Link href="/pagos/nuevo">

@@ -16,19 +16,16 @@ import { Upload } from "lucide-react"
 interface Guarantor {
   id: string
   full_name: string
-  document_type?: string
+  identification_type?: string
   identification?: string
-  tax_id?: string
   email?: string
   phone?: string
   address?: string
   occupation?: string
   employer?: string
-  employer_phone?: string
   monthly_income?: number
-  property_address?: string
-  property_registration?: string
-  guarantee_type?: string
+  guarantee_property_address?: string
+  guarantee_property_registry?: string
   notes?: string
 }
 
@@ -61,19 +58,16 @@ export function GuarantorForm({ guarantor, mode = "create" }: GuarantorFormProps
     const guarantorData = {
       agency_id: agency?.id,
       full_name: formData.get("full_name") as string,
-      document_type: formData.get("document_type") as string,
+      identification_type: formData.get("identification_type") as string,
       identification: formData.get("identification") as string,
-      tax_id: (formData.get("tax_id") as string) || null,
       email: (formData.get("email") as string) || null,
       phone: formData.get("phone") as string,
       address: (formData.get("address") as string) || null,
       occupation: (formData.get("occupation") as string) || null,
       employer: (formData.get("employer") as string) || null,
-      employer_phone: (formData.get("employer_phone") as string) || null,
       monthly_income: sanitizeNumber(formData.get("monthly_income") as string),
-      property_address: (formData.get("property_address") as string) || null,
-      property_registration: (formData.get("property_registration") as string) || null,
-      guarantee_type: formData.get("guarantee_type") as string,
+      guarantee_property_address: (formData.get("guarantee_property_address") as string) || null,
+      guarantee_property_registry: (formData.get("guarantee_property_registry") as string) || null,
       notes: (formData.get("notes") as string) || null,
     }
 
@@ -111,10 +105,10 @@ export function GuarantorForm({ guarantor, mode = "create" }: GuarantorFormProps
             />
           </div>
 
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="document_type">Tipo de Documento</Label>
-              <Select name="document_type" defaultValue={guarantor?.document_type || "DNI"}>
+              <Label htmlFor="identification_type">Tipo de Documento</Label>
+              <Select name="identification_type" defaultValue={guarantor?.identification_type || "DNI"}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -136,11 +130,6 @@ export function GuarantorForm({ guarantor, mode = "create" }: GuarantorFormProps
                 defaultValue={guarantor?.identification}
                 placeholder="12345678"
               />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="tax_id">CUIT/CUIL</Label>
-              <Input id="tax_id" name="tax_id" defaultValue={guarantor?.tax_id} placeholder="20-12345678-9" />
             </div>
           </div>
 
@@ -172,21 +161,6 @@ export function GuarantorForm({ guarantor, mode = "create" }: GuarantorFormProps
           <div className="space-y-2">
             <Label htmlFor="address">Dirección</Label>
             <Input id="address" name="address" defaultValue={guarantor?.address} placeholder="Calle y número, Ciudad" />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="guarantee_type">Tipo de Garantía *</Label>
-            <Select name="guarantee_type" defaultValue={guarantor?.guarantee_type || "propietario"}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="propietario">Propietario</SelectItem>
-                <SelectItem value="recibo_sueldo">Recibo de Sueldo</SelectItem>
-                <SelectItem value="seguro_caucion">Seguro de Caución</SelectItem>
-                <SelectItem value="otro">Otro</SelectItem>
-              </SelectContent>
-            </Select>
           </div>
 
           <div className="space-y-4 border-t pt-4">
@@ -225,16 +199,6 @@ export function GuarantorForm({ guarantor, mode = "create" }: GuarantorFormProps
                   placeholder="Nombre de la empresa"
                 />
               </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="employer_phone">Teléfono del Empleador</Label>
-                <Input
-                  id="employer_phone"
-                  name="employer_phone"
-                  defaultValue={guarantor?.employer_phone}
-                  placeholder="11 9876-5432"
-                />
-              </div>
             </div>
           </div>
 
@@ -242,21 +206,21 @@ export function GuarantorForm({ guarantor, mode = "create" }: GuarantorFormProps
             <h3 className="text-lg font-semibold">Propiedad en Garantía (si aplica)</h3>
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="property_address">Dirección de la Propiedad</Label>
+                <Label htmlFor="guarantee_property_address">Dirección de la Propiedad</Label>
                 <Input
-                  id="property_address"
-                  name="property_address"
-                  defaultValue={guarantor?.property_address}
+                  id="guarantee_property_address"
+                  name="guarantee_property_address"
+                  defaultValue={guarantor?.guarantee_property_address}
                   placeholder="Dirección completa"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="property_registration">Matrícula/Inscripción</Label>
+                <Label htmlFor="guarantee_property_registry">Matrícula/Inscripción</Label>
                 <Input
-                  id="property_registration"
-                  name="property_registration"
-                  defaultValue={guarantor?.property_registration}
+                  id="guarantee_property_registry"
+                  name="guarantee_property_registry"
+                  defaultValue={guarantor?.guarantee_property_registry}
                   placeholder="Número de matrícula"
                 />
               </div>

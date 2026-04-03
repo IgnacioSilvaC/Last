@@ -32,7 +32,7 @@ const propertyTypeLabels: Record<string, string> = {
   oficina: "Oficina",
   cochera: "Cochera",
   terreno: "Terreno",
-  galpon: "Galpón",
+  bodega: "Bodega / Galpón",
   otro: "Otro",
 }
 

@@ -152,8 +152,8 @@ export function ContractsTable({ contracts }: { contracts: ContractWithRelations
             <TableRow className="bg-muted/50">
               <TableHead>No. Contrato</TableHead>
               <TableHead>Propiedad</TableHead>
-              <TableHead>Arrendatario</TableHead>
-              <TableHead>Renta Mensual</TableHead>
+              <TableHead>Inquilino</TableHead>
+              <TableHead>Alquiler mensual</TableHead>
               <TableHead>Administración</TableHead>
               <TableHead>Vigencia Precio</TableHead>
               <TableHead>Próx. Aumento</TableHead>

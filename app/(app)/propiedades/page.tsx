@@ -14,7 +14,7 @@ export default async function PropertiesPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-primary">Propiedades</h1>
-          <p className="text-muted-foreground">Gestiona el inventario de inmuebles</p>
+          <p className="text-muted-foreground">Administra el inventario de propiedades</p>
         </div>
         <Button asChild className="bg-primary">
           <Link href="/propiedades/nueva">

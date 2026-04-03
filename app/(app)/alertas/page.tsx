@@ -18,7 +18,7 @@ const typeLabels: Record<string, string> = {
   pago_en_mora: "Pago en Mora",
   pago_parcial_recibido: "Pago Parcial",
   contrato_por_vencer: "Contrato por Vencer",
-  cliente_sin_actividad: "Sin Actividad",
+  cliente_sin_actividad: "Inquilino sin actividad",
   seguro_por_vencer: "Seguro por Vencer",
   aumento_pendiente: "Aumento Pendiente",
 }
@@ -45,7 +45,7 @@ export default async function AlertsPage() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-primary">Alertas</h1>
           <p className="text-muted-foreground">
-            {unread.length > 0 ? `${unread.length} alerta(s) sin leer` : "No hay alertas nuevas"}
+            {unread.length > 0 ? `${unread.length} ${unread.length === 1 ? "alerta sin leer" : "alertas sin leer"}` : "No hay alertas nuevas"}
           </p>
         </div>
         <AlertsActions />
@@ -116,8 +116,8 @@ export default async function AlertsPage() {
       {(!alerts || alerts.length === 0) && (
         <Card className="p-12 text-center">
           <Bell className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-          <p className="text-lg font-medium text-muted-foreground">No hay alertas</p>
-          <p className="text-sm text-muted-foreground">Las alertas se generan automáticamente al detectar vencimientos, mora o eventos importantes.</p>
+          <p className="text-lg font-medium text-muted-foreground">Sin alertas pendientes</p>
+          <p className="text-sm text-muted-foreground">Las alertas se generan de forma automática cuando se detectan vencimientos, cuotas en mora u otros eventos relevantes.</p>
         </Card>
       )}
     </div>
