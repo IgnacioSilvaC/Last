@@ -110,8 +110,12 @@ export function ContractForm({
   const [hasFireInsurance, setHasFireInsurance] = useState<boolean>(contract?.has_fire_insurance || false)
   const [fireInsurancePolicy, setFireInsurancePolicy] = useState(contract?.fire_insurance_policy || "")
   const [fireInsuranceCompany, setFireInsuranceCompany] = useState(contract?.fire_insurance_company || "")
+  const [latePaymentType, setLatePaymentType] = useState<string>(contract?.late_payment_type || "porcentaje_diario")
   const [latePaymentFeePercentage, setLatePaymentFeePercentage] = useState<number>(
     contract?.late_payment_penalty_percentage || 0,
+  )
+  const [latePaymentFixedAmount, setLatePaymentFixedAmount] = useState<number>(
+    contract?.late_payment_fixed_amount || 0,
   )
   const [graceDays, setGraceDays] = useState<number>(contract?.late_payment_grace_days || 0)
 
@@ -274,7 +278,9 @@ export function ContractForm({
       has_fire_insurance: hasFireInsurance,
       fire_insurance_policy: hasFireInsurance ? fireInsurancePolicy : null,
       fire_insurance_company: hasFireInsurance ? fireInsuranceCompany : null,
-      late_payment_penalty_percentage: latePaymentFeePercentage,
+      late_payment_type: latePaymentType,
+      late_payment_penalty_percentage: latePaymentType === "porcentaje_diario" ? latePaymentFeePercentage : 0,
+      late_payment_fixed_amount: latePaymentType === "monto_fijo" ? latePaymentFixedAmount : 0,
       late_payment_grace_days: graceDays,
       special_clauses: specialClauses,
       notes,
@@ -748,21 +754,13 @@ export function ContractForm({
 
             <Card>
               <CardHeader>
-                <CardTitle>Multas y Penalidades</CardTitle>
+                <CardTitle>Penalidades por Mora</CardTitle>
+                <CardDescription>
+                  La mora comienza el día {paymentDay + graceDays} del mes (día de pago {paymentDay} + {graceDays} días de gracia)
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid gap-4 md:grid-cols-2">
-                  <div className="space-y-2">
-                    <Label htmlFor="latePaymentFee">Multa por Mora (%)</Label>
-                    <Input
-                      id="latePaymentFee"
-                      type="number"
-                      step="0.01"
-                      min="0"
-                      value={latePaymentFeePercentage}
-                      onChange={(e) => setLatePaymentFeePercentage(Number(e.target.value))}
-                    />
-                  </div>
                   <div className="space-y-2">
                     <Label htmlFor="graceDays">Días de Gracia</Label>
                     <Input
@@ -772,8 +770,60 @@ export function ContractForm({
                       value={graceDays}
                       onChange={(e) => setGraceDays(Number(e.target.value))}
                     />
+                    <p className="text-xs text-muted-foreground">
+                      Días adicionales después del día {paymentDay} antes de aplicar mora
+                    </p>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Tipo de Penalidad</Label>
+                    <Select value={latePaymentType} onValueChange={setLatePaymentType}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="porcentaje_diario">% diario sobre saldo pendiente</SelectItem>
+                        <SelectItem value="monto_fijo">Monto fijo por mora</SelectItem>
+                        <SelectItem value="ninguna">Sin penalidad</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
+
+                {latePaymentType === "porcentaje_diario" && (
+                  <div className="space-y-2">
+                    <Label htmlFor="latePaymentFee">Porcentaje Diario (%)</Label>
+                    <Input
+                      id="latePaymentFee"
+                      type="number"
+                      step="0.001"
+                      min="0"
+                      value={latePaymentFeePercentage}
+                      onChange={(e) => setLatePaymentFeePercentage(Number(e.target.value))}
+                      placeholder="Ej: 0.1 = 0.1% por día"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Se aplica sobre el saldo pendiente por cada día de atraso (ej: 0.1 = 0.1% diario)
+                    </p>
+                  </div>
+                )}
+
+                {latePaymentType === "monto_fijo" && (
+                  <div className="space-y-2">
+                    <Label htmlFor="latePaymentFixed">Monto Fijo de Penalidad</Label>
+                    <Input
+                      id="latePaymentFixed"
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      value={latePaymentFixedAmount}
+                      onChange={(e) => setLatePaymentFixedAmount(Number(e.target.value))}
+                      placeholder="Ej: 5000"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Se cobra una sola vez al vencer el período de gracia
+                    </p>
+                  </div>
+                )}
               </CardContent>
             </Card>
 

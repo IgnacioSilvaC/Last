@@ -202,9 +202,12 @@ CREATE TABLE IF NOT EXISTS public.contracts (
   increase_frequency_months INTEGER DEFAULT 12,
   next_increase_date DATE,
   first_increase_date DATE,
-  -- Penalidades mora
-  late_payment_penalty_percentage DECIMAL(5,2) NOT NULL DEFAULT 0,
-  late_payment_grace_days INTEGER NOT NULL DEFAULT 0,
+  -- Penalidades mora (personalizables por contrato)
+  late_payment_type TEXT NOT NULL DEFAULT 'porcentaje_diario'
+    CHECK (late_payment_type IN ('porcentaje_diario', 'monto_fijo', 'ninguna')),
+  late_payment_penalty_percentage DECIMAL(5,2) NOT NULL DEFAULT 0, -- % diario (si late_payment_type = porcentaje_diario)
+  late_payment_fixed_amount DECIMAL(12,2) NOT NULL DEFAULT 0,      -- cargo único (si late_payment_type = monto_fijo)
+  late_payment_grace_days INTEGER NOT NULL DEFAULT 0,               -- días después de payment_day antes de mora
   early_termination_penalty_months INTEGER DEFAULT 2,
   -- Seguro
   has_fire_insurance BOOLEAN DEFAULT false,

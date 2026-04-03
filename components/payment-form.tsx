@@ -23,10 +23,13 @@ interface ContractOption {
   current_rent_amount?: number
   currency: string
   tenant_id: string
+  payment_day?: number
   admin_fee_percentage?: number
   expenses_amount?: number
+  late_payment_type?: string
   late_payment_penalty_percentage?: number
   late_payment_grace_days?: number
+  late_payment_fixed_amount?: number
 }
 
 interface TenantOption {
@@ -66,7 +69,7 @@ export function PaymentForm({ payment, mode = "create", contracts: propContracts
 
       const { data: contractsData } = await supabase
         .from("contracts")
-        .select("id, contract_number, monthly_rent, current_rent_amount, currency, tenant_id, admin_fee_percentage, expenses_amount, late_payment_penalty_percentage, late_payment_grace_days")
+        .select("id, contract_number, monthly_rent, current_rent_amount, currency, tenant_id, payment_day, admin_fee_percentage, expenses_amount, late_payment_type, late_payment_penalty_percentage, late_payment_grace_days, late_payment_fixed_amount")
         .eq("status", "activo")
 
       const { data: tenantsData } = await supabase.from("tenants").select("id, full_name")
@@ -85,6 +88,18 @@ export function PaymentForm({ payment, mode = "create", contracts: propContracts
       setSelectedContractData(null)
     }
   }, [selectedContract, contracts])
+
+  // Auto-calculate due date from contract's payment_day + selected period
+  useEffect(() => {
+    if (isEditing) return
+    if (!selectedContractData?.payment_day || !periodYear || !periodMonth) return
+    const day = selectedContractData.payment_day
+    const daysInMonth = new Date(periodYear, periodMonth, 0).getDate()
+    const actualDay = Math.min(day, daysInMonth)
+    setDueDate(
+      `${periodYear}-${String(periodMonth).padStart(2, "0")}-${String(actualDay).padStart(2, "0")}`
+    )
+  }, [selectedContractData, periodYear, periodMonth, isEditing])
 
   const getTenantName = (tenantId: string) => {
     const tenant = tenants.find((t) => t.id === tenantId)
@@ -229,6 +244,29 @@ export function PaymentForm({ payment, mode = "create", contracts: propContracts
                   </p>
                 </div>
               </div>
+              {selectedContractData.payment_day && (
+                <div className="mt-3 pt-3 border-t grid gap-2 md:grid-cols-2 text-sm">
+                  <div>
+                    <span className="text-muted-foreground">Vencimiento:</span>
+                    <p className="font-medium">Día {selectedContractData.payment_day} del mes</p>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Mora desde:</span>
+                    <p className="font-medium">
+                      Día {(selectedContractData.payment_day) + (selectedContractData.late_payment_grace_days || 0)} del mes
+                      {selectedContractData.late_payment_grace_days
+                        ? ` (${selectedContractData.late_payment_grace_days} días de gracia)`
+                        : ""}
+                      {" — "}
+                      {selectedContractData.late_payment_type === "monto_fijo"
+                        ? `Cargo fijo: ${formatCurrency(selectedContractData.late_payment_fixed_amount || 0, selectedContractData.currency as CurrencyType)}`
+                        : selectedContractData.late_payment_type === "ninguna"
+                        ? "Sin penalidad"
+                        : `${selectedContractData.late_payment_penalty_percentage || 0}% diario`}
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 

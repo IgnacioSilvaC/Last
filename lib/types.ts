@@ -186,6 +186,8 @@ export interface Contract {
   // Penalidades
   late_payment_penalty_percentage: number
   late_payment_grace_days: number
+  late_payment_type?: string
+  late_payment_fixed_amount?: number
   early_termination_penalty_months?: number
   // Aumentos
   increase_type?: IncreaseType
