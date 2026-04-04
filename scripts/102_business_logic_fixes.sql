@@ -219,12 +219,12 @@ BEGIN
     PERFORM cron.schedule(
       'mark-overdue-payments',
       '0 3 * * *',
-      $$SELECT public.mark_overdue_payments()$$
+      'SELECT public.mark_overdue_payments()'
     );
     PERFORM cron.schedule(
       'expire-finished-contracts',
       '0 3 * * *',
-      $$SELECT public.expire_finished_contracts()$$
+      'SELECT public.expire_finished_contracts()'
     );
   END IF;
 END;
