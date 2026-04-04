@@ -31,6 +31,8 @@ const CSV_HEADERS = [
   "comision_porcentaje",
   "expensas",
   "meses_deposito",
+  "pagado_hasta",   // optional: YYYY-MM-DD — payments up to this date are marked pagado
+  "saldo_deudor",   // optional: amount still owed on the first unpaid payment
   "notas",
 ]
 
@@ -55,6 +57,8 @@ const CSV_EXAMPLE: Record<string, string> = {
   comision_porcentaje: "5",
   expensas: "0",
   meses_deposito: "1",
+  pagado_hasta: "2026-03-31",
+  saldo_deudor: "0",
   notas: "",
 }
 
@@ -243,8 +247,25 @@ export function ContractsCsvImporter() {
     }
 
     // Generate monthly payments for each imported contract
-    for (const contract of inserted || []) {
-      await supabase.rpc("generate_contract_payments", { p_contract_id: contract.id })
+    for (let i = 0; i < (inserted || []).length; i++) {
+      const contract = inserted![i]
+      const raw = validRows[i].raw
+      const paidThrough = raw.pagado_hasta?.trim() || null
+      const saldoDeudor = raw.saldo_deudor ? Number(raw.saldo_deudor) : 0
+
+      await supabase.rpc("generate_contract_payments", {
+        p_contract_id:  contract.id,
+        p_paid_through: paidThrough || null,
+      })
+
+      // If there's an outstanding balance on top of the paid-through date, apply it
+      if (paidThrough && saldoDeudor > 0) {
+        await supabase.rpc("mark_payments_paid_through", {
+          p_contract_id:         contract.id,
+          p_paid_through:        paidThrough,
+          p_outstanding_balance: saldoDeudor,
+        })
+      }
     }
 
     setResult({ imported: validRows.length, skipped: rows.length - validRows.length })
@@ -292,6 +313,15 @@ export function ContractsCsvImporter() {
           <p><strong>tipo_mora:</strong> porcentaje_diario | monto_fijo | ninguna</p>
           <p><strong>tipo_aumento:</strong> porcentaje | fijo | icl | ipc | uva | none</p>
           <p><strong>moneda:</strong> ARS | USD | MXN (default: ARS)</p>
+          <p className="pt-1 border-t border-muted">
+            <strong>pagado_hasta</strong> (opcional): fecha YYYY-MM-DD hasta donde ya se pagó. Ej: <code>2026-03-31</code> — cuotas hasta esa fecha quedan como <em>pagado</em>.
+          </p>
+          <p>
+            <strong>saldo_deudor</strong> (opcional): deuda pendiente sobre la primera cuota no pagada. Ej: <code>50000</code>.
+          </p>
+          <p className="text-amber-600">
+            Si el contrato ya está al día al momento de importar, completá <strong>pagado_hasta</strong> con la fecha del último mes pagado.
+          </p>
         </div>
 
         {globalError && (

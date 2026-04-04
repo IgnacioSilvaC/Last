@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Pencil } from "lucide-react"
 import Link from "next/link"
+import { BulkMarkPaidButton } from "@/components/bulk-mark-paid-button"
 
 const statusColors: Record<string, string> = {
   activo: "bg-green-500/10 text-green-500",
@@ -50,12 +51,18 @@ export default async function ContractDetailPage({ params }: { params: Promise<{
           <h1 className="text-3xl font-bold tracking-tight">{contract.contract_number}</h1>
           <p className="text-muted-foreground">Detalle del contrato de alquiler</p>
         </div>
-        <Button asChild>
-          <Link href={`/contratos/${contract.id}/editar`}>
-            <Pencil className="mr-2 h-4 w-4" />
-            Editar
-          </Link>
-        </Button>
+        <div className="flex gap-2">
+          <BulkMarkPaidButton
+            contractId={contract.id}
+            contractNumber={contract.contract_number}
+          />
+          <Button asChild>
+            <Link href={`/contratos/${contract.id}/editar`}>
+              <Pencil className="mr-2 h-4 w-4" />
+              Editar
+            </Link>
+          </Button>
+        </div>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
