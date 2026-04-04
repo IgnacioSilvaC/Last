@@ -231,12 +231,22 @@ export function ContractsCsvImporter() {
     const supabase = createClient()
     const validRows = rows.filter((r) => r.errors.length === 0 && r.mapped)
     const toInsert = validRows.map((r) => ({ ...r.mapped!, agency_id: agency.id }))
-    const { error } = await supabase.from("contracts").insert(toInsert)
+
+    const { data: inserted, error } = await supabase
+      .from("contracts")
+      .insert(toInsert)
+      .select("id")
     if (error) {
       setGlobalError(`Error al importar: ${error.message}`)
       setStatus("preview")
       return
     }
+
+    // Generate monthly payments for each imported contract
+    for (const contract of inserted || []) {
+      await supabase.rpc("generate_contract_payments", { p_contract_id: contract.id })
+    }
+
     setResult({ imported: validRows.length, skipped: rows.length - validRows.length })
     setStatus("done")
     setRows([])

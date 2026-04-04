@@ -97,6 +97,12 @@ const financeMenuItems = [
     roles: ["admin", "agente", "contador"],
   },
   {
+    title: "Comisiones",
+    url: "/comisiones",
+    icon: TrendingUp,
+    roles: ["admin", "contador"],
+  },
+  {
     title: "Índices",
     url: "/indices",
     icon: TrendingUp,
@@ -121,6 +127,12 @@ const adminMenuItems = [
     title: "Agentes",
     url: "/agentes",
     icon: UserPlus,
+    roles: ["admin"],
+  },
+  {
+    title: "Cuentas Bancarias",
+    url: "/cuentas",
+    icon: DollarSign,
     roles: ["admin"],
   },
   {

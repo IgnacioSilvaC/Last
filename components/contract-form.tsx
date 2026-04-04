@@ -305,8 +305,15 @@ export function ContractForm({
         const { error: updateError } = await supabase.from("contracts").update(contractData).eq("id", contract.id)
         if (updateError) throw updateError
       } else {
-        const { error: insertError } = await supabase.from("contracts").insert(contractData)
+        const { data: inserted, error: insertError } = await supabase
+          .from("contracts")
+          .insert(contractData)
+          .select("id")
+          .single()
         if (insertError) throw insertError
+
+        // Auto-generate all monthly payments for this contract
+        await supabase.rpc("generate_contract_payments", { p_contract_id: inserted.id })
 
         // Update property status
         if (selectedPropertyId) {

@@ -18,11 +18,11 @@ import {
 import { createClient } from "@/lib/supabase/client"
 import { useAgency } from "@/hooks/use-agency"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Plus, Loader2 } from "lucide-react"
 import { getTodayLocalString } from "@/lib/date-utils"
 import { formatCurrency } from "@/lib/contract-calculations"
-import type { Payment } from "@/lib/types"
+import type { Payment, BankAccount } from "@/lib/types"
 
 interface PartialPaymentFormProps {
   payment: Payment
@@ -36,8 +36,25 @@ export function PartialPaymentForm({ payment, currency = "ARS" }: PartialPayment
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [amount, setAmount] = useState<string>("")
+  const [paymentMethod, setPaymentMethod] = useState("transferencia")
+  const [bankAccountId, setBankAccountId] = useState<string>("")
+  const [bankAccounts, setBankAccounts] = useState<BankAccount[]>([])
 
   const pendingAmount = Number(payment.pending_amount || 0)
+
+  useEffect(() => {
+    if (!open) return
+    const loadAccounts = async () => {
+      const supabase = createClient()
+      const { data } = await supabase
+        .from("bank_accounts")
+        .select("*")
+        .eq("is_active", true)
+        .order("bank_name")
+      setBankAccounts(data || [])
+    }
+    loadAccounts()
+  }, [open])
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -71,8 +88,9 @@ export function PartialPaymentForm({ payment, currency = "ARS" }: PartialPayment
         agency_id: agency.id,
         amount: parsedAmount,
         payment_date: formData.get("payment_date") as string,
-        payment_method: formData.get("payment_method") as string,
+        payment_method: paymentMethod,
         receipt_number: (formData.get("receipt_number") as string) || null,
+        bank_account_id: paymentMethod === "transferencia" && bankAccountId ? bankAccountId : null,
         recorded_by: user.id,
         notes: (formData.get("notes") as string) || null,
       })
@@ -155,8 +173,8 @@ export function PartialPaymentForm({ payment, currency = "ARS" }: PartialPayment
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="pp_method">Método *</Label>
-              <Select name="payment_method" defaultValue="transferencia">
+              <Label>Método *</Label>
+              <Select value={paymentMethod} onValueChange={setPaymentMethod}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="transferencia">Transferencia</SelectItem>
@@ -168,6 +186,25 @@ export function PartialPaymentForm({ payment, currency = "ARS" }: PartialPayment
               </Select>
             </div>
           </div>
+
+          {paymentMethod === "transferencia" && (
+            <div className="space-y-2">
+              <Label>Cuenta destino</Label>
+              <Select value={bankAccountId} onValueChange={setBankAccountId}>
+                <SelectTrigger><SelectValue placeholder="Seleccionar cuenta (opcional)" /></SelectTrigger>
+                <SelectContent>
+                  {bankAccounts.map((acc) => (
+                    <SelectItem key={acc.id} value={acc.id}>
+                      {acc.bank_name}{acc.alias ? ` — ${acc.alias}` : ""}
+                    </SelectItem>
+                  ))}
+                  {bankAccounts.length === 0 && (
+                    <SelectItem value="" disabled>No hay cuentas registradas</SelectItem>
+                  )}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
 
           <div className="space-y-2">
             <Label htmlFor="pp_receipt">N° Recibo / Referencia</Label>

@@ -253,6 +253,21 @@ export interface Payment {
   partial_payments?: PartialPayment[]
 }
 
+export interface BankAccount {
+  id: string
+  agency_id: string
+  bank_name: string
+  account_holder: string
+  account_type: "caja_ahorro" | "corriente" | "virtual" | "otro"
+  cbu?: string
+  alias?: string
+  currency: CurrencyType
+  description?: string
+  is_active: boolean
+  created_at: string
+  updated_at: string
+}
+
 export interface PartialPayment {
   id: string
   payment_id: string
@@ -262,9 +277,11 @@ export interface PartialPayment {
   payment_method: PaymentMethod
   receipt_number?: string
   recorded_by: string
+  bank_account_id?: string
   notes?: string
   created_at: string
   recorded_by_profile?: { full_name?: string; email?: string }
+  bank_account?: BankAccount
 }
 
 export interface InterestCalculation {
