@@ -11,6 +11,7 @@ import {
   LogOut,
   ShieldCheck,
   TrendingUp,
+  Settings,
   UserPlus,
   CalendarClock,
   Bell,
