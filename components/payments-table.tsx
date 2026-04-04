@@ -86,22 +86,37 @@ export function PaymentsTable({ payments }: { payments: Payment[] }) {
     })
   }, [payments, filters])
 
-  // Summary metrics
+  // Summary metrics grouped by currency
   const summary = useMemo(() => {
     const pending = filteredPayments.filter((p) => p.status !== "pagado" && p.status !== "anulado")
-    const totalPending = pending.reduce((sum, p) => sum + Number(p.pending_amount || 0), 0)
-    const totalPaid = filteredPayments
-      .filter((p) => p.status === "pagado" || p.status === "parcial")
-      .reduce((sum, p) => sum + Number(p.paid_amount || 0), 0)
     const overdue = pending.filter((p) => {
       const mora = getMoraStatus(p.due_date, Number(p.pending_amount || 0), Number(p.contracts?.late_payment_grace_days || 0))
       return mora === "en_mora" || mora === "mora_grave"
     })
+
+    // Group totals by currency
+    const byCurrency: Record<string, { pending: number; paid: number; overdue: number }> = {}
+    const addTo = (currency: string, field: "pending" | "paid" | "overdue", amount: number) => {
+      if (!byCurrency[currency]) byCurrency[currency] = { pending: 0, paid: 0, overdue: 0 }
+      byCurrency[currency][field] += amount
+    }
+
+    for (const p of pending) {
+      const cur = p.contracts?.currency || p.currency || "ARS"
+      addTo(cur, "pending", Number(p.pending_amount || 0))
+    }
+    for (const p of filteredPayments.filter((p) => p.status === "pagado" || p.status === "parcial")) {
+      const cur = p.contracts?.currency || p.currency || "ARS"
+      addTo(cur, "paid", Number(p.paid_amount || 0))
+    }
+    for (const p of overdue) {
+      const cur = p.contracts?.currency || p.currency || "ARS"
+      addTo(cur, "overdue", Number(p.pending_amount || 0))
+    }
+
     return {
-      totalPending,
-      totalPaid,
+      byCurrency,
       overdueCount: overdue.length,
-      overdueAmount: overdue.reduce((sum, p) => sum + Number(p.pending_amount || 0), 0),
     }
   }, [filteredPayments])
 
@@ -137,15 +152,36 @@ export function PaymentsTable({ payments }: { payments: Payment[] }) {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <div className="bg-green-50 dark:bg-green-950/30 rounded-lg p-3 border">
           <p className="text-xs text-green-600 font-medium">Cobrado</p>
-          <p className="text-lg font-bold text-green-700">{formatCurrency(summary.totalPaid, "ARS")}</p>
+          {Object.entries(summary.byCurrency).map(([cur, vals]) =>
+            vals.paid > 0 ? (
+              <p key={cur} className="text-lg font-bold text-green-700 leading-tight">{formatCurrency(vals.paid, cur)}</p>
+            ) : null
+          )}
+          {Object.values(summary.byCurrency).every((v) => v.paid === 0) && (
+            <p className="text-lg font-bold text-green-700">{formatCurrency(0, "ARS")}</p>
+          )}
         </div>
         <div className="bg-yellow-50 dark:bg-yellow-950/30 rounded-lg p-3 border">
           <p className="text-xs text-yellow-600 font-medium">Pendiente</p>
-          <p className="text-lg font-bold text-yellow-700">{formatCurrency(summary.totalPending, "ARS")}</p>
+          {Object.entries(summary.byCurrency).map(([cur, vals]) =>
+            vals.pending > 0 ? (
+              <p key={cur} className="text-lg font-bold text-yellow-700 leading-tight">{formatCurrency(vals.pending, cur)}</p>
+            ) : null
+          )}
+          {Object.values(summary.byCurrency).every((v) => v.pending === 0) && (
+            <p className="text-lg font-bold text-yellow-700">{formatCurrency(0, "ARS")}</p>
+          )}
         </div>
         <div className="bg-red-50 dark:bg-red-950/30 rounded-lg p-3 border">
           <p className="text-xs text-red-600 font-medium">En Mora ({summary.overdueCount})</p>
-          <p className="text-lg font-bold text-red-700">{formatCurrency(summary.overdueAmount, "ARS")}</p>
+          {Object.entries(summary.byCurrency).map(([cur, vals]) =>
+            vals.overdue > 0 ? (
+              <p key={cur} className="text-lg font-bold text-red-700 leading-tight">{formatCurrency(vals.overdue, cur)}</p>
+            ) : null
+          )}
+          {Object.values(summary.byCurrency).every((v) => v.overdue === 0) && (
+            <p className="text-lg font-bold text-red-700">{formatCurrency(0, "ARS")}</p>
+          )}
         </div>
         <div className="bg-blue-50 dark:bg-blue-950/30 rounded-lg p-3 border">
           <p className="text-xs text-blue-600 font-medium">Total cuotas</p>

@@ -70,7 +70,12 @@ export function ApplyIncreaseButton({
         applied_at: new Date().toISOString(),
       })
 
-      if (increaseError) throw increaseError
+      if (increaseError) {
+        if (increaseError.code === "23505") {
+          throw new Error("Este aumento ya fue aplicado para este contrato en esa fecha.")
+        }
+        throw increaseError
+      }
 
       // 2. Actualizar el contrato con el nuevo monto y próxima fecha de aumento
       const { data: contract } = await supabase

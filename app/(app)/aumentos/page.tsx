@@ -27,10 +27,10 @@ export default async function AumentosPage() {
 
   // Get increases applied this month to filter them out
   const { data: appliedThisMonth } = await supabase
-    .from("contract_increases")
-    .select("contract_id, increase_date")
-    .gte("increase_date", `${currentYear}-${String(currentMonth + 1).padStart(2, "0")}-01`)
-    .lte("increase_date", `${currentYear}-${String(currentMonth + 1).padStart(2, "0")}-31`)
+    .from("contract_rent_history")
+    .select("contract_id, effective_date")
+    .gte("effective_date", `${currentYear}-${String(currentMonth + 1).padStart(2, "0")}-01`)
+    .lte("effective_date", `${currentYear}-${String(currentMonth + 1).padStart(2, "0")}-31`)
 
   const appliedContractIds = new Set((appliedThisMonth || []).map((i) => i.contract_id))
 
@@ -42,12 +42,12 @@ export default async function AumentosPage() {
     .limit(36)
 
   const { data: appliedIncreases } = await supabase
-    .from("contract_increases")
+    .from("contract_rent_history")
     .select(`
       *,
       contracts (contract_number, properties (code))
     `)
-    .order("increase_date", { ascending: false })
+    .order("effective_date", { ascending: false })
     .limit(20)
 
   const pendingIncreases = (contracts || [])
@@ -259,13 +259,13 @@ export default async function AumentosPage() {
                   {appliedIncreases.map((increase) => (
                     <TableRow key={increase.id} className="hover:bg-muted/30">
                       <TableCell>
-                        {new Date(increase.increase_date + "T12:00:00").toLocaleDateString("es-AR")}
+                        {new Date(increase.effective_date + "T12:00:00").toLocaleDateString("es-AR")}
                       </TableCell>
                       <TableCell className="font-medium">
                         {increase.contracts?.contract_number} - {increase.contracts?.properties?.code}
                       </TableCell>
                       <TableCell>
-                        <Badge variant="outline">{increase.increase_type.toUpperCase()}</Badge>
+                        <Badge variant="outline">{increase.increase_type?.toUpperCase()}</Badge>
                       </TableCell>
                       <TableCell className="text-right">
                         ${Number(increase.previous_rent).toLocaleString("es-AR")}
@@ -275,7 +275,7 @@ export default async function AumentosPage() {
                       </TableCell>
                       <TableCell className="text-right">
                         <Badge variant="secondary" className="bg-green-500/10 text-green-600">
-                          +{Number(increase.percentage_applied).toFixed(2)}%
+                          +{Number(increase.increase_percentage).toFixed(2)}%
                         </Badge>
                       </TableCell>
                     </TableRow>

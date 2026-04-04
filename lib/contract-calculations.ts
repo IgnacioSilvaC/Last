@@ -108,7 +108,7 @@ export function calculateNextIncrease(
     return null
   }
 
-  const currentRent = contract.current_rent_amount || contract.monthly_rent
+  const currentRent = contract.current_rent_amount ?? contract.monthly_rent
   const frequencyMonths = contract.increase_frequency_months || 12
 
   let nextIncreaseDate: Date
@@ -187,7 +187,7 @@ export function generateIncreaseSchedule(
   const endDate = new Date(contract.end_date + "T12:00:00")
   const frequencyMonths = contract.increase_frequency_months || 12
 
-  let currentRent = contract.monthly_rent
+  let currentRent = contract.current_rent_amount ?? contract.monthly_rent
   const currentDate = new Date(startDate)
   currentDate.setMonth(currentDate.getMonth() + frequencyMonths)
 
@@ -322,15 +322,28 @@ export function calculateInterestOnBalance(
 }
 
 // Calcular penalidad por mora
+// latePaymentType: 'porcentaje_diario' | 'monto_fijo' | 'ninguna'
+// penaltyPercentage: daily % (e.g. 0.1 = 0.1% per day) — used when type is porcentaje_diario
+// fixedAmount: fixed penalty charged once when overdue — used when type is monto_fijo
 export function calculateLateFee(
   pendingAmount: number,
   penaltyPercentage: number,
   daysOverdue: number,
   graceDays: number,
+  latePaymentType: string = "porcentaje_diario",
+  fixedAmount: number = 0,
 ): number {
-  if (pendingAmount <= 0 || penaltyPercentage <= 0) return 0
+  if (pendingAmount <= 0) return 0
   const effectiveDays = daysOverdue - graceDays
   if (effectiveDays <= 0) return 0
-  // Penalidad = saldo pendiente * (% penalidad / 30) * días efectivos de mora
-  return roundCurrency(pendingAmount * (penaltyPercentage / 100 / 30) * effectiveDays)
+
+  if (latePaymentType === "ninguna") return 0
+
+  if (latePaymentType === "monto_fijo") {
+    return roundCurrency(fixedAmount)
+  }
+
+  // porcentaje_diario: penaltyPercentage is % per day
+  if (penaltyPercentage <= 0) return 0
+  return roundCurrency(pendingAmount * (penaltyPercentage / 100) * effectiveDays)
 }
