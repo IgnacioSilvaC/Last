@@ -181,17 +181,17 @@ BEGIN
         status     = 'disponible',
         updated_at = NOW()
       WHERE id = COALESCE(OLD.property_id, NEW.property_id)
-        AND status IN ('alquilado', 'reservado');
+        AND status IN ('arrendado', 'reservado');
     END IF;
   END IF;
 
-  -- On INSERT or when status changes to 'activo', mark property as alquilado
+  -- On INSERT or when status changes to 'activo', mark property as arrendado
   IF (TG_OP = 'INSERT' AND NEW.status = 'activo') OR
      (TG_OP = 'UPDATE' AND NEW.status = 'activo' AND OLD.status != 'activo') THEN
     IF NEW.property_id IS NOT NULL THEN
       UPDATE public.properties
       SET
-        status     = 'alquilado',
+        status     = 'arrendado',
         updated_at = NOW()
       WHERE id = NEW.property_id;
     END IF;
