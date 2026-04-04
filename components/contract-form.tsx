@@ -231,8 +231,17 @@ export function ContractForm({
     setLoading(true)
     setError(null)
 
-    if (!startDate || !endDate) {
-      setError("Las fechas de inicio y fin son requeridas")
+    // Validate required fields
+    const missing: string[] = []
+    if (!contractNumber.trim()) missing.push("Número de contrato")
+    if (!selectedTenantId) missing.push("Arrendatario")
+    if (!selectedLandlordId) missing.push("Arrendador")
+    if (!selectedPropertyId) missing.push("Propiedad")
+    if (!startDate) missing.push("Fecha de inicio")
+    if (!endDate) missing.push("Fecha de fin")
+    if (!monthlyRent || monthlyRent <= 0) missing.push("Alquiler mensual")
+    if (missing.length > 0) {
+      setError(`Campos requeridos: ${missing.join(", ")}`)
       setLoading(false)
       return
     }
@@ -252,14 +261,18 @@ export function ContractForm({
       return
     }
 
+    // Auto-generate contract number if empty
+    const finalContractNumber = contractNumber.trim() ||
+      `CTR-${new Date().getFullYear()}-${String(Date.now()).slice(-5)}`
+
     const contractData = {
       agency_id: agency.id,
-      property_id: selectedPropertyId || null,
-      tenant_id: selectedTenantId || null,
-      landlord_id: selectedLandlordId || null,
+      property_id: selectedPropertyId,
+      tenant_id: selectedTenantId,
+      landlord_id: selectedLandlordId,
       guarantor_id: selectedGuarantorId || null,
       guarantor_2_id: showSecondGuarantor && selectedGuarantor2Id ? selectedGuarantor2Id : null,
-      contract_number: contractNumber,
+      contract_number: finalContractNumber,
       start_date: startDate,
       end_date: endDate,
       currency,
@@ -858,6 +871,9 @@ export function ContractForm({
         </Tabs>
 
         {/* Submit */}
+        {error && (
+          <div className="bg-destructive/10 text-destructive p-4 rounded-lg text-sm">{error}</div>
+        )}
         <div className="flex justify-end gap-4">
           <Button type="button" variant="outline" onClick={() => router.back()}>
             Cancelar

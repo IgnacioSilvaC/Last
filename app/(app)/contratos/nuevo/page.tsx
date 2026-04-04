@@ -5,7 +5,7 @@ export default async function NewContractPage() {
   const supabase = await createClient()
 
   const [{ data: properties }, { data: tenants }, { data: landlords }, { data: guarantors }] = await Promise.all([
-    supabase.from("properties").select("*").eq("status", "disponible"),
+    supabase.from("properties").select("*").in("status", ["disponible", "reservado"]),
     supabase.from("tenants").select("*"),
     supabase.from("landlords").select("*"),
     supabase.from("guarantors").select("*"),
