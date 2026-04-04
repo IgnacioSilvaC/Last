@@ -68,10 +68,7 @@ export default async function ComisionesPage({
   }> = {}
 
   for (const pp of partialPayments || []) {
-    const payment    = pp.payments as any
-    const contract   = payment?.contracts as any
-    const currency   = contract?.currency || "ARS"
-    const adminFeePct = Number(contract?.admin_fee_percentage || 0)
+    const payment = pp.payments as any
 
     // Proportional admin fee for this partial payment
     const proportion = payment?.total_amount > 0
@@ -112,7 +109,6 @@ export default async function ComisionesPage({
         <CommissionsFilters
           selectedMonth={selectedMonth}
           selectedYear={selectedYear}
-          bankAccounts={bankAccounts || []}
         />
       </div>
 

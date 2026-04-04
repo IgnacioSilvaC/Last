@@ -191,7 +191,7 @@ export function ContractsCsvImporter() {
       if (increaseType && increaseType !== "none" && raw.fecha_inicio) {
         const start = new Date(raw.fecha_inicio + "T12:00:00")
         start.setMonth(start.getMonth() + increaseFrequency)
-        next_increase_date = start.toISOString().split("T")[0]
+        next_increase_date = `${start.getFullYear()}-${String(start.getMonth() + 1).padStart(2, "0")}-${String(start.getDate()).padStart(2, "0")}`
       }
 
       const mapped = {

@@ -199,7 +199,7 @@ export function PartialPaymentForm({ payment, currency = "ARS" }: PartialPayment
                     </SelectItem>
                   ))}
                   {bankAccounts.length === 0 && (
-                    <SelectItem value="" disabled>No hay cuentas registradas</SelectItem>
+                    <SelectItem value="__none__" disabled>No hay cuentas registradas</SelectItem>
                   )}
                 </SelectContent>
               </Select>

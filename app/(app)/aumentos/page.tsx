@@ -217,6 +217,7 @@ export default async function AumentosPage() {
                           percentage={increase!.percentageApplied}
                           increaseType={increase!.increaseType}
                           increaseDate={increase!.increaseDate.toISOString().split("T")[0]}
+                          currency={increase!.contract.currency}
                           indexValues={increase!.indexValues}
                         />
                       </TableCell>

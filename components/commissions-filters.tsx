@@ -16,7 +16,6 @@ const years = [currentYear - 2, currentYear - 1, currentYear, currentYear + 1]
 interface Props {
   selectedMonth: number
   selectedYear: number
-  bankAccounts: { id: string; bank_name: string; alias?: string | null }[]
 }
 
 export function CommissionsFilters({ selectedMonth, selectedYear }: Props) {
