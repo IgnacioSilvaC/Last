@@ -12,9 +12,19 @@
 -- =====================================================
 -- Fix #12 — Prevent duplicate increase applications
 -- =====================================================
-ALTER TABLE public.contract_rent_history
-  ADD CONSTRAINT IF NOT EXISTS uq_rent_history_contract_date
-  UNIQUE (contract_id, effective_date);
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint
+    WHERE conname = 'uq_rent_history_contract_date'
+      AND conrelid = 'public.contract_rent_history'::regclass
+  ) THEN
+    ALTER TABLE public.contract_rent_history
+      ADD CONSTRAINT uq_rent_history_contract_date
+      UNIQUE (contract_id, effective_date);
+  END IF;
+END;
+$$;
 
 
 -- =====================================================
