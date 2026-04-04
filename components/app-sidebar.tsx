@@ -11,10 +11,10 @@ import {
   LogOut,
   ShieldCheck,
   TrendingUp,
-  Settings,
   UserPlus,
   CalendarClock,
   Bell,
+  Upload,
 } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
@@ -120,6 +120,12 @@ const adminMenuItems = [
     title: "Agentes",
     url: "/agentes",
     icon: UserPlus,
+    roles: ["admin"],
+  },
+  {
+    title: "Importar CSV",
+    url: "/importar",
+    icon: Upload,
     roles: ["admin"],
   },
   {
